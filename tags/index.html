@@ -204,6 +204,8 @@
 
     
 
+	
+
   </aside>
 
 
@@ -231,9 +233,37 @@
   <div class="tag-cloud-title">
     1 tag in total
   </div>
-  <div class="tag-cloud-tags">
-    <a href="/tags/Hexo/" style="font-size: 12px;" class="tag-cloud-0">Hexo</a>
-  </div>
+  
+  <div class="tags" id="myTags">
+  <canvas width="500" height="500" id="my3DTags">
+    <p>Anything in here will be replaced on browsers that support the canvas element</p>
+  </canvas>
+</div>
+<div class="tags" id="tags">
+  <ul style="display: none">
+    <a href="/tags/Hexo/" style="font-size: 12px; color: #ccc">Hexo</a>
+  </ul>
+</div>
+<script type="text/javascript" src="/js/tagcanvas.js"></script>
+<script type="text/javascript" >
+  window.onload = function() {
+    try {
+      TagCanvas.Start('my3DTags','tags',{
+        textFont: 'Georgia,Optima',
+        textColour: null,
+        outlineColour: 'black',
+        weight: true,
+        reverse: true,
+        depth: 0.8,
+        maxSpeed: 0.05,
+        bgRadius: 1,
+        freezeDecel: true
+      });
+    } catch(e) {
+      document.getElementById('myTags').style.display = 'none';
+    }
+  };
+</script>
 </div>
 
       </div>
