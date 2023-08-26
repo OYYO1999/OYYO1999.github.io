@@ -2531,6 +2531,11 @@ header.header {
   background-position: center;
   background-repeat: no-repeat;
   bottom: 0;
+  position: fixed;
+  top: 0;
+  transition: all 0.2s ease-out;
+  width: 240px;
+  z-index: 20;
   position: -webkit-sticky;
   position: sticky;
   top: 12px;
