@@ -2526,6 +2526,11 @@ header.header {
   border-bottom-color: #fc6423;
 }
 .sidebar {
+  background: url("/images/sidebar-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  bottom: 0;
   position: -webkit-sticky;
   position: sticky;
   top: 12px;
