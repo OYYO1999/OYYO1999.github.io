@@ -26,4 +26,16 @@
         <tag>Hexo</tag>
       </tags>
   </entry>
+  <entry>
+    <title>OpenFOAM槽道流动怎么添加初始湍流脉动,How to initialize turbulence about channel flow in OpenFOAM.</title>
+    <url>/archives/3064a881.html</url>
+    <content><![CDATA[<h1 id="OpenFOAM槽道流动怎么添加初始湍流脉动"><a href="#OpenFOAM槽道流动怎么添加初始湍流脉动" class="headerlink" title="OpenFOAM槽道流动怎么添加初始湍流脉动"></a>OpenFOAM槽道流动怎么添加初始湍流脉动</h1><p>&emsp;&emsp;,How to initialize turbulence about channel flow in  OpenFOAM. 在槽道流动计算中，湍流状态是很难发生的，因为计算中扰动比较难发生，一般都是人工进行添加来进行计算，</p>
+]]></content>
+      <categories>
+        <category>About OpenFOAM</category>
+      </categories>
+      <tags>
+        <tag>OpenFOAM</tag>
+      </tags>
+  </entry>
 </search>
