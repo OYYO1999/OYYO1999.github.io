@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>OpenFOAM中的场松弛和方程松弛</title>
+    <url>/archives/ec2bd2a0.html</url>
+    <content><![CDATA[<h1 id="场松弛和方程松弛"><a href="#场松弛和方程松弛" class="headerlink" title="场松弛和方程松弛"></a>场松弛和方程松弛</h1><p>之前在调整PIMPLE算法中，里面对松弛因子的调整有：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">relaxationFactors</span><br><span class="line">&#123;</span><br><span class="line">	fields</span><br><span class="line">	&#123;</span><br><span class="line">		p	<span class="number">0.9</span>;</span><br><span class="line">		pFinal	<span class="number">0.9</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	equations</span><br><span class="line">	&#123;</span><br><span class="line">		p		<span class="number">0.9</span>;</span><br><span class="line">		U               <span class="number">0.9</span>;</span><br><span class="line">		UFinal		 <span class="number">0.9</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;查询资料发现：在进行松弛的过程中，实际上是有两种类型的松弛化的。一种是对动量方程的松弛，目的是增加对角占优的特性，使得方程更加稳定，不容易发散。另一种是直接对场如压力场、湍动能场和温度场进行松弛。</p>
+<h2 id="方程的松弛化"><a href="#方程的松弛化" class="headerlink" title="方程的松弛化"></a>方程的松弛化</h2><p>&emsp;&emsp;动量方程可以写成以下的形式：</p>
+<p>$$<br>a_P\bold{U_P}+\sum_N a_N \bold{U_N} &#x3D; R_P<br>$$</p>
+<p>&emsp;&emsp;其中$a_P$是对角元，$a_N$是其他非对角元。那么在两端在两端加上一个松弛因子，即有：<br>$$<br>\frac{1-\alpha}{\alpha}a_P\bold{U_P}+a_P\bold{U_P}+\sum_N a_N \bold{U_N} &#x3D; R_P + \frac{1-\alpha}{\alpha}a_P\bold{U_P}<br>$$</p>
+<p>&emsp;&emsp;那么当收敛的时候$\bold{U_P^{old}}&#x3D;\bold{U_P}$，两端附加项就消失了。<br>&emsp;&emsp;整理公式有，可以得到：<br>$$<br>\frac{1}{\alpha}a_P\bold{U_P}+\sum_N a_N \bold{U_N} &#x3D; R_P + \frac{1-\alpha}{\alpha} a_P \bold{U_P^{old}}<br>$$</p>
+<p>&emsp;&emsp;那么当$\alpha \rightarrow 0$，对角元将会变得更大，方程也就变得更加稳定(不容易发散)。</p>
+<h2 id="场的离散"><a href="#场的离散" class="headerlink" title="场的离散"></a>场的离散</h2><p>&emsp;&emsp;传统方式里面，我们使用松弛化，是应用在解向量&#x2F;矩阵里面。<br>&emsp;&emsp;比如对于压力场的解，可以松弛化为：<br>$$<br>p&#x3D;\alpha p_{new} + (1-\alpha)p_{old}<br>$$<br>&emsp;&emsp;同理，我们也可以将其应用在其他的标量输运方程里面，比如说湍动能$k$和温度项$T$:<br>$$<br>k&#x3D;\alpha k_{new} + (1-\alpha)k_{old}<br>T&#x3D;\alpha T_{new} + (1-\alpha)T_{old}<br>$$</p>
+<p>&emsp;&emsp;$\alpha$是松弛因子，如果$\alpha&#x3D;1$，那么当前迭代步的值将就是当前迭代步的值，没有任何旧迭代步的影响。如果$\alpha&#x3D;0$，当前迭代步等于前一个迭代步的值。</p>
+<h1 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h1><p>[1] [[CFD] The PISO Algorithm]([CFD] The PISO Algorithm)<br>[2] <a href="https://www.cfd-online.com/Forums/openfoam-solving/196204-difference-between-fields-equations-relaxation-sub-directories-fvsolution.html">Difference between “fields” and “equations” relaxation sub-directories in fvSolution</a><br>[3] <a href="https://www.openfoam.com/documentation/guides/latest/doc/guide-solvers-under-relaxation.html">OpenFOAM User Guide:Under relaxation</a> </p>
+]]></content>
+      <categories>
+        <category>About OpenFOAM</category>
+      </categories>
+      <tags>
+        <tag>OpenFOAM</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>OpenFOAM槽道流动怎么添加初始湍流脉动</title>
     <url>/archives/3064a881.html</url>
     <content><![CDATA[<h1 id="OpenFOAM槽道流动怎么添加初始湍流脉动"><a href="#OpenFOAM槽道流动怎么添加初始湍流脉动" class="headerlink" title="OpenFOAM槽道流动怎么添加初始湍流脉动"></a>OpenFOAM槽道流动怎么添加初始湍流脉动</h1><p>&emsp;&emsp; 在槽道流动计算中，湍流状态是很难发生的，因为计算中扰动比较难发生，一般都是人工进行添加来进行计算，但是由于人工添加脉动可能在计算过程逐渐被耗散，因此需要一些专门方式来进行添加脉动。</p>

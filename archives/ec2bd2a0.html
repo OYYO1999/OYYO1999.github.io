@@ -20,28 +20,28 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"oyyo1999.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"scrollpercent":true},"copycode":{"enable":true,"style":"mac"},"fold":{"enable":false,"height":500},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="Hexo using, 关于Hexo的基础知识">
+    <meta name="description" content="本文主要介绍一下OpenFOAM中PISO算法中 relaxfactor中场松弛(field)和方程松弛(equation)的含义，有利于加深对OpenFOAM求解过程的理解。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="https://oyyo1999.github.io/archives/4a17b156.html">
+<meta property="og:title" content="OpenFOAM中的场松弛和方程松弛">
+<meta property="og:url" content="https://oyyo1999.github.io/archives/ec2bd2a0.html">
 <meta property="og:site_name" content="OYYO">
-<meta property="og:description" content="Hexo using, 关于Hexo的基础知识">
+<meta property="og:description" content="本文主要介绍一下OpenFOAM中PISO算法中 relaxfactor中场松弛(field)和方程松弛(equation)的含义，有利于加深对OpenFOAM求解过程的理解。">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-08-14T05:51:31.169Z">
-<meta property="article:modified_time" content="2023-08-15T09:54:33.000Z">
+<meta property="article:published_time" content="2023-08-30T08:22:57.000Z">
+<meta property="article:modified_time" content="2023-08-30T08:26:09.752Z">
 <meta property="article:author" content="OYYO">
-<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="OpenFOAM">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://oyyo1999.github.io/archives/4a17b156.html">
+<link rel="canonical" href="https://oyyo1999.github.io/archives/ec2bd2a0.html">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://oyyo1999.github.io/archives/4a17b156.html","path":"archives/4a17b156.html","title":"Hello World"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://oyyo1999.github.io/archives/ec2bd2a0.html","path":"archives/ec2bd2a0.html","title":"OpenFOAM中的场松弛和方程松弛"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Hello World | OYYO</title>
+<title>OpenFOAM中的场松弛和方程松弛 | OYYO</title>
   
 
 
@@ -141,7 +141,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-text">Deploy to remote sites</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Quick-Operation%EF%BC%9A"><span class="nav-text">Quick Operation：</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%BA%E6%9D%BE%E5%BC%9B%E5%92%8C%E6%96%B9%E7%A8%8B%E6%9D%BE%E5%BC%9B"><span class="nav-text">场松弛和方程松弛</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E7%A8%8B%E7%9A%84%E6%9D%BE%E5%BC%9B%E5%8C%96"><span class="nav-text">方程的松弛化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%BA%E7%9A%84%E7%A6%BB%E6%95%A3"><span class="nav-text">场的离散</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-text">参考连接：</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -220,7 +220,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://oyyo1999.github.io/archives/4a17b156.html">
+    <link itemprop="mainEntityOfPage" href="https://oyyo1999.github.io/archives/ec2bd2a0.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/header.jpg">
@@ -233,12 +233,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="Hello World | OYYO">
-      <meta itemprop="description" content="Hexo using, 关于Hexo的基础知识">
+      <meta itemprop="name" content="OpenFOAM中的场松弛和方程松弛 | OYYO">
+      <meta itemprop="description" content="本文主要介绍一下OpenFOAM中PISO算法中 relaxfactor中场松弛(field)和方程松弛(equation)的含义，有利于加深对OpenFOAM求解过程的理解。">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hello World
+          OpenFOAM中的场松弛和方程松弛
         </h1>
 
         <div class="post-meta-container">
@@ -248,15 +248,9 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
+      
 
-      <time title="Created: 2023-08-14 13:51:31" itemprop="dateCreated datePublished" datetime="2023-08-14T13:51:31+08:00">2023-08-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-08-15 17:54:33" itemprop="dateModified" datetime="2023-08-15T17:54:33+08:00">2023-08-15</time>
+      <time title="Created: 2023-08-30 16:22:57 / Modified: 16:26:09" itemprop="dateCreated datePublished" datetime="2023-08-30T16:22:57+08:00">2023-08-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -264,7 +258,7 @@
       </span>
       <span class="post-meta-item-text">In</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/About-Hexo/" itemprop="url" rel="index"><span itemprop="name">About Hexo</span></a>
+          <a href="/categories/About-OpenFOAM/" itemprop="url" rel="index"><span itemprop="name">About OpenFOAM</span></a>
         </span>
     </span>
 
@@ -278,28 +272,25 @@
     </span>
 </div>
 
-            <div class="post-description">Hexo using, 关于Hexo的基础知识</div>
+            <div class="post-description">本文主要介绍一下OpenFOAM中PISO算法中 relaxfactor中场松弛(field)和方程松弛(equation)的含义，有利于加深对OpenFOAM求解过程的理解。</div>
         </div>
       </header>
 
     
     
     
-    <div class="post-body" itemprop="articleBody"><p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+    <div class="post-body" itemprop="articleBody"><h1 id="场松弛和方程松弛"><a href="#场松弛和方程松弛" class="headerlink" title="场松弛和方程松弛"></a>场松弛和方程松弛</h1><p>之前在调整PIMPLE算法中，里面对松弛因子的调整有：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">relaxationFactors</span><br><span class="line">&#123;</span><br><span class="line">	fields</span><br><span class="line">	&#123;</span><br><span class="line">		p	<span class="number">0.9</span>;</span><br><span class="line">		pFinal	<span class="number">0.9</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	equations</span><br><span class="line">	&#123;</span><br><span class="line">		p		<span class="number">0.9</span>;</span><br><span class="line">		U               <span class="number">0.9</span>;</span><br><span class="line">		UFinal		 <span class="number">0.9</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<h3 id="Quick-Operation："><a href="#Quick-Operation：" class="headerlink" title="Quick Operation："></a>Quick Operation：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<p>&emsp;&emsp;查询资料发现：在进行松弛的过程中，实际上是有两种类型的松弛化的。一种是对动量方程的松弛，目的是增加对角占优的特性，使得方程更加稳定，不容易发散。另一种是直接对场如压力场、湍动能场和温度场进行松弛。</p>
+<h2 id="方程的松弛化"><a href="#方程的松弛化" class="headerlink" title="方程的松弛化"></a>方程的松弛化</h2><p>&emsp;&emsp;动量方程可以写成以下的形式：</p>
+<p>$$<br>a_P\bold{U_P}+\sum_N a_N \bold{U_N} &#x3D; R_P<br>$$</p>
+<p>&emsp;&emsp;其中$a_P$是对角元，$a_N$是其他非对角元。那么在两端在两端加上一个松弛因子，即有：<br>$$<br>\frac{1-\alpha}{\alpha}a_P\bold{U_P}+a_P\bold{U_P}+\sum_N a_N \bold{U_N} &#x3D; R_P + \frac{1-\alpha}{\alpha}a_P\bold{U_P}<br>$$</p>
+<p>&emsp;&emsp;那么当收敛的时候$\bold{U_P^{old}}&#x3D;\bold{U_P}$，两端附加项就消失了。<br>&emsp;&emsp;整理公式有，可以得到：<br>$$<br>\frac{1}{\alpha}a_P\bold{U_P}+\sum_N a_N \bold{U_N} &#x3D; R_P + \frac{1-\alpha}{\alpha} a_P \bold{U_P^{old}}<br>$$</p>
+<p>&emsp;&emsp;那么当$\alpha \rightarrow 0$，对角元将会变得更大，方程也就变得更加稳定(不容易发散)。</p>
+<h2 id="场的离散"><a href="#场的离散" class="headerlink" title="场的离散"></a>场的离散</h2><p>&emsp;&emsp;传统方式里面，我们使用松弛化，是应用在解向量&#x2F;矩阵里面。<br>&emsp;&emsp;比如对于压力场的解，可以松弛化为：<br>$$<br>p&#x3D;\alpha p_{new} + (1-\alpha)p_{old}<br>$$<br>&emsp;&emsp;同理，我们也可以将其应用在其他的标量输运方程里面，比如说湍动能$k$和温度项$T$:<br>$$<br>k&#x3D;\alpha k_{new} + (1-\alpha)k_{old}<br>T&#x3D;\alpha T_{new} + (1-\alpha)T_{old}<br>$$</p>
+<p>&emsp;&emsp;$\alpha$是松弛因子，如果$\alpha&#x3D;1$，那么当前迭代步的值将就是当前迭代步的值，没有任何旧迭代步的影响。如果$\alpha&#x3D;0$，当前迭代步等于前一个迭代步的值。</p>
+<h1 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h1><p>[1] [[CFD] The PISO Algorithm]([CFD] The PISO Algorithm)<br>[2] <a target="_blank" rel="noopener" href="https://www.cfd-online.com/Forums/openfoam-solving/196204-difference-between-fields-equations-relaxation-sub-directories-fvsolution.html">Difference between “fields” and “equations” relaxation sub-directories in fvSolution</a><br>[3] <a target="_blank" rel="noopener" href="https://www.openfoam.com/documentation/guides/latest/doc/guide-solvers-under-relaxation.html">OpenFOAM User Guide:Under relaxation</a> </p>
 
     </div>
 
@@ -331,7 +322,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="https://oyyo1999.github.io/archives/4a17b156.html" title="Hello World">https://oyyo1999.github.io/archives/4a17b156.html</a>
+      <a href="https://oyyo1999.github.io/archives/ec2bd2a0.html" title="OpenFOAM中的场松弛和方程松弛">https://oyyo1999.github.io/archives/ec2bd2a0.html</a>
   </li>
   <li class="post-copyright-license">
       <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -340,7 +331,7 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/Hexo/" rel="tag"><i class="fa fa-tag"></i> Hexo</a>
+              <a href="/tags/OpenFOAM/" rel="tag"><i class="fa fa-tag"></i> OpenFOAM</a>
           </div>
 	    <script type="text/javascript">
             var tagsall=document.getElementsByClassName("post-tags")
@@ -402,11 +393,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
+                <a href="/archives/3064a881.html" rel="prev" title="OpenFOAM槽道流动怎么添加初始湍流脉动">
+                  <i class="fa fa-angle-left"></i> OpenFOAM槽道流动怎么添加初始湍流脉动
+                </a>
             </div>
             <div class="post-nav-item">
-                <a href="/archives/3064a881.html" rel="next" title="OpenFOAM槽道流动怎么添加初始湍流脉动">
-                  OpenFOAM槽道流动怎么添加初始湍流脉动 <i class="fa fa-angle-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -511,7 +502,7 @@ setInterval("createtime()",250);
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"OYYO1999","repo":"oyyo1999.github.io","client_id":"8fd43f14acaf5272cc55","client_secret":"c1d3b64b24c04d81e947e1abc115cd4165110f7d","admin_user":"OYYO1999","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"92b7c6b364c0072d9829e509b12b8d8d"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"OYYO1999","repo":"oyyo1999.github.io","client_id":"8fd43f14acaf5272cc55","client_secret":"c1d3b64b24c04d81e947e1abc115cd4165110f7d","admin_user":"OYYO1999","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"en","js":{"url":"https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"2527247f236fb468f287d6a5f4cf63cd"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
