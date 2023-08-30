@@ -279,18 +279,22 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h1 id="场松弛和方程松弛"><a href="#场松弛和方程松弛" class="headerlink" title="场松弛和方程松弛"></a>场松弛和方程松弛</h1><p>之前在调整PIMPLE算法中，里面对松弛因子的调整有：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">relaxationFactors</span><br><span class="line">&#123;</span><br><span class="line">	fields</span><br><span class="line">	&#123;</span><br><span class="line">		p	<span class="number">0.9</span>;</span><br><span class="line">		pFinal	<span class="number">0.9</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	equations</span><br><span class="line">	&#123;</span><br><span class="line">		p		<span class="number">0.9</span>;</span><br><span class="line">		U               <span class="number">0.9</span>;</span><br><span class="line">		UFinal		 <span class="number">0.9</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+    <div class="post-body" itemprop="articleBody"><h1 id="场松弛和方程松弛"><a href="#场松弛和方程松弛" class="headerlink" title="场松弛和方程松弛"></a>场松弛和方程松弛</h1><p>之前在调整PIMPLE算法中，里面对松弛因子的调整有：<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">relaxationFactors</span><br><span class="line">&#123;</span><br><span class="line">	fields</span><br><span class="line">	&#123;</span><br><span class="line">		p	<span class="number">0.9</span>;</span><br><span class="line">		pFinal	<span class="number">0.9</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	equations</span><br><span class="line">	&#123;</span><br><span class="line">		p		<span class="number">0.9</span>;</span><br><span class="line">		U               <span class="number">0.9</span>;</span><br><span class="line">		UFinal		 <span class="number">0.9</span>;</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>&emsp;&emsp;查询资料发现：在进行松弛的过程中，实际上是有两种类型的松弛化的。一种是对动量方程的松弛，目的是增加对角占优的特性，使得方程更加稳定，不容易发散。另一种是直接对场如压力场、湍动能场和温度场进行松弛。</p>
 <h2 id="方程的松弛化"><a href="#方程的松弛化" class="headerlink" title="方程的松弛化"></a>方程的松弛化</h2><p>&emsp;&emsp;动量方程可以写成以下的形式：</p>
-<p>$$<br>a_P\bold{U_P}+\sum_N a_N \bold{U_N} &#x3D; R_P<br>$$</p>
-<p>&emsp;&emsp;其中$a_P$是对角元，$a_N$是其他非对角元。那么在两端在两端加上一个松弛因子，即有：<br>$$<br>\frac{1-\alpha}{\alpha}a_P\bold{U_P}+a_P\bold{U_P}+\sum_N a_N \bold{U_N} &#x3D; R_P + \frac{1-\alpha}{\alpha}a_P\bold{U_P}<br>$$</p>
-<p>&emsp;&emsp;那么当收敛的时候$\bold{U_P^{old}}&#x3D;\bold{U_P}$，两端附加项就消失了。<br>&emsp;&emsp;整理公式有，可以得到：<br>$$<br>\frac{1}{\alpha}a_P\bold{U_P}+\sum_N a_N \bold{U_N} &#x3D; R_P + \frac{1-\alpha}{\alpha} a_P \bold{U_P^{old}}<br>$$</p>
-<p>&emsp;&emsp;那么当$\alpha \rightarrow 0$，对角元将会变得更大，方程也就变得更加稳定(不容易发散)。</p>
-<h2 id="场的离散"><a href="#场的离散" class="headerlink" title="场的离散"></a>场的离散</h2><p>&emsp;&emsp;传统方式里面，我们使用松弛化，是应用在解向量&#x2F;矩阵里面。<br>&emsp;&emsp;比如对于压力场的解，可以松弛化为：<br>$$<br>p&#x3D;\alpha p_{new} + (1-\alpha)p_{old}<br>$$<br>&emsp;&emsp;同理，我们也可以将其应用在其他的标量输运方程里面，比如说湍动能$k$和温度项$T$:<br>$$<br>k&#x3D;\alpha k_{new} + (1-\alpha)k_{old}<br>T&#x3D;\alpha T_{new} + (1-\alpha)T_{old}<br>$$</p>
-<p>&emsp;&emsp;$\alpha$是松弛因子，如果$\alpha&#x3D;1$，那么当前迭代步的值将就是当前迭代步的值，没有任何旧迭代步的影响。如果$\alpha&#x3D;0$，当前迭代步等于前一个迭代步的值。</p>
-<h1 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h1><p>[1] [[CFD] The PISO Algorithm]([CFD] The PISO Algorithm)<br>[2] <a target="_blank" rel="noopener" href="https://www.cfd-online.com/Forums/openfoam-solving/196204-difference-between-fields-equations-relaxation-sub-directories-fvsolution.html">Difference between “fields” and “equations” relaxation sub-directories in fvSolution</a><br>[3] <a target="_blank" rel="noopener" href="https://www.openfoam.com/documentation/guides/latest/doc/guide-solvers-under-relaxation.html">OpenFOAM User Guide:Under relaxation</a> </p>
+<script type="math/tex; mode=display">
+a_P\bold{U_P}+\sum_N a_N \bold{U_N} = R_P</script><p>&emsp;&emsp;其中$a_P$是对角元，$a_N$是其他非对角元。那么在两端在两端加上一个松弛因子，即有：</p>
+<script type="math/tex; mode=display">
+\frac{1-\alpha}{\alpha}a_P\bold{U_P}+a_P\bold{U_P}+\sum_N a_N \bold{U_N} = R_P + \frac{1-\alpha}{\alpha}a_P\bold{U_P}</script><p>&emsp;&emsp;那么当收敛的时候$\bold{U_P^{old}}=\bold{U_P}$，两端附加项就消失了。<br>&emsp;&emsp;整理公式有，可以得到：</p>
+<script type="math/tex; mode=display">
+\frac{1}{\alpha}a_P\bold{U_P}+\sum_N a_N \bold{U_N} = R_P + \frac{1-\alpha}{\alpha} a_P \bold{U_P^{old}}</script><p>&emsp;&emsp;那么当$\alpha \rightarrow 0$，对角元将会变得更大，方程也就变得更加稳定(不容易发散)。</p>
+<h2 id="场的离散"><a href="#场的离散" class="headerlink" title="场的离散"></a>场的离散</h2><p>&emsp;&emsp;传统方式里面，我们使用松弛化，是应用在解向量/矩阵里面。<br>&emsp;&emsp;比如对于压力场的解，可以松弛化为：</p>
+<script type="math/tex; mode=display">
+p=\alpha p_{new} + (1-\alpha)p_{old}</script><p>&emsp;&emsp;同理，我们也可以将其应用在其他的标量输运方程里面，比如说湍动能$k$和温度项$T$:</p>
+<script type="math/tex; mode=display">
+k=\alpha k_{new} + (1-\alpha)k_{old}
+T=\alpha T_{new} + (1-\alpha)T_{old}</script><p>&emsp;&emsp;$\alpha$是松弛因子，如果$\alpha=1$，那么当前迭代步的值将就是当前迭代步的值，没有任何旧迭代步的影响。如果$\alpha=0$，当前迭代步等于前一个迭代步的值。</p>
+<h1 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h1><p>[1] <a href="[CFD] The PISO Algorithm">[CFD] The PISO Algorithm</a><br>[2] <a target="_blank" rel="noopener" href="https://www.cfd-online.com/Forums/openfoam-solving/196204-difference-between-fields-equations-relaxation-sub-directories-fvsolution.html">Difference between “fields” and “equations” relaxation sub-directories in fvSolution</a><br>[3] <a target="_blank" rel="noopener" href="https://www.openfoam.com/documentation/guides/latest/doc/guide-solvers-under-relaxation.html">OpenFOAM User Guide:Under relaxation</a> </p>
 
     </div>
 
@@ -498,6 +502,12 @@ setInterval("createtime()",250);
   <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
 
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.8.0/dist/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
