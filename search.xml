@@ -38,6 +38,37 @@ User Guide:Under relaxation</a></p>
       </tags>
   </entry>
   <entry>
+    <title>Hello World</title>
+    <url>/archives/4a17b156.html</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very
+first post. Check <a href="https://hexo.io/docs/">documentation</a> for
+more info. If you get any problems when using Hexo, you can find the
+answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or
+you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="create-a-new-post">Create a new post</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="run-server">Run server</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="generate-static-files">Generate static files</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<h3 id="quick-operation">Quick Operation：</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>About Hexo</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>OpenFOAM槽道流动怎么添加初始湍流脉动</title>
     <url>/archives/3064a881.html</url>
     <content><![CDATA[<h1 id="openfoam槽道流动怎么添加初始湍流脉动">OpenFOAM槽道流动怎么添加初始湍流脉动</h1>
@@ -52,7 +83,7 @@ User Guide:Under relaxation</a></p>
   <strong>代码解析：</strong></p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line">internalField   #codeStream</span><br><span class="line">&#123;</span><br><span class="line">    code</span><br><span class="line">    #&#123;</span><br><span class="line">        <span class="type">const</span> IOdictionary&amp; d = <span class="built_in">static_cast</span>&lt;<span class="type">const</span> IOdictionary&amp;&gt;(dict);</span><br><span class="line">        <span class="type">const</span> objectRegistry&amp; db = d.<span class="built_in">db</span>();</span><br><span class="line"></span><br><span class="line">        <span class="type">const</span> fvMesh&amp; mesh = <span class="built_in">refCast</span>&lt;<span class="type">const</span> fvMesh&gt;(d.<span class="built_in">db</span>());</span><br><span class="line"></span><br><span class="line">        volVectorField&amp; fld =</span><br><span class="line">        <span class="built_in">const_cast</span>&lt;volVectorField&amp;&gt;(db.<span class="built_in">lookupObject</span>&lt;volVectorField&gt;(<span class="string">&quot;U&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// settings need modified start</span></span><br><span class="line">        <span class="comment">// direction</span></span><br><span class="line">        direction streamDir = <span class="number">0</span>;</span><br><span class="line">        direction spanDir = <span class="number">2</span>;</span><br><span class="line">        direction heightDir = <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// half height</span></span><br><span class="line">        <span class="type">const</span> scalar h = <span class="number">1.0</span>;</span><br><span class="line">        <span class="type">const</span> scalar Um = <span class="number">0.4</span>;</span><br><span class="line">        <span class="type">const</span> scalar Retau = <span class="number">1000</span>;</span><br><span class="line">        <span class="type">const</span> scalar nu = <span class="number">2e-5</span>;</span><br><span class="line">        <span class="type">const</span> scalar utau = Retau*nu/h;</span><br><span class="line">        <span class="comment">// settings need modified end</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// spanwise wavenumber: spacing z+ = 200</span></span><br><span class="line">        <span class="type">const</span> scalar betaPlus = <span class="number">2.0</span>*constant::mathematical::pi*(<span class="number">1.0</span>/<span class="number">200.0</span>);</span><br><span class="line">        <span class="comment">// streamwise wave number: spacing x+ = 500</span></span><br><span class="line">        <span class="type">const</span> scalar alphaPlus = <span class="number">2.0</span>*constant::mathematical::pi*(<span class="number">1.0</span>/<span class="number">500.0</span>);</span><br><span class="line">        <span class="type">const</span> scalar sigma = <span class="number">0.00055</span>;</span><br><span class="line">        <span class="type">const</span> scalar epsilon = Um/<span class="number">200.0</span>;</span><br><span class="line">        <span class="type">const</span> scalar duplus = Um*<span class="number">0.25</span>/utau; <span class="comment">//具体见Eugene De Villiers的博士论文</span></span><br><span class="line"></span><br><span class="line">        <span class="type">const</span> <span class="type">bool</span> setBulk = <span class="literal">true</span>;</span><br><span class="line">        <span class="type">const</span> <span class="type">bool</span> perturb = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Random number generator</span></span><br><span class="line">        <span class="function">Random <span class="title">perturbation</span><span class="params">(<span class="number">1234567</span>)</span></span>;</span><br><span class="line"></span><br><span class="line">        <span class="type">const</span> vectorField&amp; centres = mesh.<span class="built_in">C</span>();</span><br><span class="line"></span><br><span class="line">        forAll(centres, celli)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// add a small (+/-20%) random component to enhance symetry breaking</span></span><br><span class="line">            scalar deviation=<span class="number">1.0</span> + <span class="number">0.2</span>*perturbation.<span class="built_in">GaussNormal</span>&lt;scalar&gt;();</span><br><span class="line"></span><br><span class="line">            <span class="type">const</span> vector&amp; cCentre = centres[celli];</span><br><span class="line"></span><br><span class="line">            scalar zplus = cCentre[spanDir]*Retau/h;</span><br><span class="line">            scalar y = <span class="built_in">min</span>(cCentre[heightDir], <span class="number">2</span>*h-cCentre[heightDir]);</span><br><span class="line">            scalar yplus = y*Retau/h;</span><br><span class="line">            scalar xplus = cCentre[streamDir]*Retau/h;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (setBulk)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// laminar parabolic profile</span></span><br><span class="line">                fld[celli] = vector::zero;</span><br><span class="line"></span><br><span class="line">                fld[celli][streamDir] =</span><br><span class="line">                    <span class="number">3.0</span>*Um * (y/h - <span class="number">0.5</span>*<span class="built_in">sqr</span>(y/h));</span><br><span class="line">                    <span class="comment">// Blasius Um*( 5/4*(1-pow(zloc-1,4)));</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (perturb)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// streak streamwise velocity</span></span><br><span class="line">                fld[celli][streamDir] +=</span><br><span class="line">                    (utau * duplus/<span class="number">2.0</span>) * (yplus/<span class="number">40.0</span>)</span><br><span class="line">                    * Foam::<span class="built_in">exp</span>(-sigma * Foam::<span class="built_in">sqr</span>(yplus) + <span class="number">0.5</span>)</span><br><span class="line">                    * Foam::<span class="built_in">cos</span>(betaPlus*zplus)*deviation;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// streak spanwise perturbation</span></span><br><span class="line">                fld[celli][spanDir] =</span><br><span class="line">                    epsilon</span><br><span class="line">                * Foam::<span class="built_in">sin</span>(alphaPlus*xplus)</span><br><span class="line">                * yplus</span><br><span class="line">                * Foam::<span class="built_in">exp</span>(-sigma*Foam::<span class="built_in">sqr</span>(yplus))</span><br><span class="line">                * deviation;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        fld.<span class="built_in">writeEntry</span>(<span class="string">&quot;&quot;</span>, os);</span><br><span class="line">        <span class="comment">// os &lt;&lt; fld.internalField();</span></span><br><span class="line"></span><br><span class="line">    #&#125;;</span><br><span class="line"></span><br><span class="line">    codeInclude</span><br><span class="line">    #&#123;</span><br><span class="line">        <span class="meta">#<span class="keyword">include</span> <span class="string">&quot;fvCFD.H&quot;</span></span></span><br><span class="line">    #&#125;;</span><br><span class="line"> </span><br><span class="line">    codeOptions</span><br><span class="line">    #&#123;</span><br><span class="line">        -I$(LIB_SRC)/finiteVolume/lnInclude \</span><br><span class="line">        -I$(LIB_SRC)/meshTools/lnInclude</span><br><span class="line">    #&#125;;</span><br><span class="line"></span><br><span class="line">    codeLibs</span><br><span class="line">    #&#123;</span><br><span class="line">        -lfiniteVolume \</span><br><span class="line">        -lmeshTools</span><br><span class="line">    #&#125;;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>  按照代码说明把需要改的参数改好，将上述代码写入算例/0/U文件中，即可计算，具体效果如下图。
-<img data-src="/OpenFOAM槽道流动怎么添加初始湍流脉动-How-to-initialize-turbulence-about-channel-flow-in-OpenFOAM/channelflow.gif" alt="Channel Flow"></p>
+[Channel Flow]: channelflow.gif</p>
 <center style="color:#C0C0C0;text-decoration:underline">
 利用CodeStream生成的湍流
 </center>
@@ -93,37 +124,6 @@ with mapFields</a></li>
       <tags>
         <tag>OpenFOAM</tag>
         <tag>Channel Flow</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/archives/4a17b156.html</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very
-first post. Check <a href="https://hexo.io/docs/">documentation</a> for
-more info. If you get any problems when using Hexo, you can find the
-answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or
-you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<h3 id="quick-operation">Quick Operation：</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>About Hexo</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
       </tags>
   </entry>
 </search>
